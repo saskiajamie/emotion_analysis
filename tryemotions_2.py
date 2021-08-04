@@ -6,18 +6,20 @@ from nltk.stem.snowball import SnowballStemmer
 from tqdm import tqdm_notebook as tqdm
 from tqdm import trange
 
-def text_emotion(df, column):
+ df = pd.read_csv ('./0_results_robinhood.csv', index_col=None, header=0)
+
+def text_emotion(text, column):
     '''
     INPUT: DataFrame, string
     OUTPUT: the original DataFrame with ten new columns for each emotion
     '''
-
+   
     new_df = df.copy()
 
     xlsx = pd.read_excel('./robinhood/cleaned_data.xlsx')
-    emolex_df = xlsx[['word', 'Positive_NRC','Negative_NRC','Anger', 'Anticipation', 'Disgust', 'Fear','Joy',
+    emolex_df = xlsx[['text', 'Positive_NRC','Negative_NRC','Anger', 'Anticipation', 'Disgust', 'Fear','Joy',
                       'Sadness', 'Surprise', 'Trust']]
-    emotions = emolex_df.columns.drop('word')
+    emotions = emolex_df.columns.drop('text')
     emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
 
     stemmer = SnowballStemmer("english")
@@ -39,42 +41,42 @@ def text_emotion(df, column):
     return new_df
 
 
-silmarillion_sentiments_final = text_emotion(silmarillion_sentiments, 'tweet')
+df = text_emotion(df, 'text')
 
 
 # In[259]:
 
 
-silmarillion_sentiments_final.head()
+df.head()
 
 
 # In[260]:
 
 
-silmarillion_sentiments_final['word_count'] = silmarillion_sentiments_final['Text'].apply(tokenize.word_tokenize).apply(len)
-silmarillion_sentiments_final
+df['word_count'] = df['text'].apply(tokenize.word_tokenize).apply(len)
+df
 
 
 # In[240]:
 
 
-silmarillion_sentiments_final.Anger = silmarillion_sentiments_final.Anger.astype('float64') 
-silmarillion_sentiments_final.Anticipation = silmarillion_sentiments_final.Anticipation.astype('float64') 
-silmarillion_sentiments_final.Disgust = silmarillion_sentiments_final.Disgust.astype('float64') 
-silmarillion_sentiments_final.Fear = silmarillion_sentiments_final.Fear.astype('float64') 
-silmarillion_sentiments_final.Joy = silmarillion_sentiments_final.Joy.astype('float64') 
-silmarillion_sentiments_final.Negative = silmarillion_sentiments_final.Negative_NRC.astype('float64') 
-silmarillion_sentiments_final.Positive = silmarillion_sentiments_final.Positive_NRC.astype('float64') 
-silmarillion_sentiments_final.Sadness = silmarillion_sentiments_final.Sadness.astype('float64') 
-silmarillion_sentiments_final.Surprise = silmarillion_sentiments_final.Surprise.astype('float64') 
-silmarillion_sentiments_final.Trust = silmarillion_sentiments_final.Trust.astype('float64') 
-silmarillion_sentiments_final.word_count = silmarillion_sentiments_final.word_count.astype('float64') 
+df.Anger = df.Anger.astype('float64') 
+df.Anticipation = df.Anticipation.astype('float64') 
+df.Disgust = df.Disgust.astype('float64') 
+df.Fear = df.Fear.astype('float64') 
+df.Joy = df.Joy.astype('float64') 
+df.Negative = df.Negative_NRC.astype('float64') 
+df.Positive = df.Positive_NRC.astype('float64') 
+df.Sadness = df.Sadness.astype('float64') 
+df.Surprise = df.Surprise.astype('float64') 
+df.Trust = df.Trust.astype('float64') 
+df.word_count = df.word_count.astype('float64') 
 
 
 # In[261]:
 
 
-silmarillion_sentiments_final.dtypes
+df.dtypes
 
 
 # In[262]:
@@ -88,30 +90,30 @@ emotions = ['Positive_NRC','Negative_NRC','Anger','Anticipation','Disgust','Fear
 
 
 for emotion in emotions:
-    silmarillion_sentiments_final[emotion]=silmarillion_sentiments_final[emotion]/silmarillion_sentiments_final['word_count']
+    df[emotion]=df[emotion]/df['word_count']
 
-silmarillion_sentiments_final.head()
+df.head()
 
 
 # In[264]:
 
 
-silmarillion_sentiments_final.to_csv('./robinhood_emotions.csv')
+df.to_csv('./robinhood_emotions.csv')
 
 
 # In[269]:
 
 
-def ratings(silmarillion_sentiments_final):
-    if silmarillion_sentiments_final['Compound'] > 0.05:
+def ratings(df):
+    if df['Compound'] > 0.05:
         return 1
-    elif silmarillion_sentiments_final['Compound'] < -0.05:
+    elif df['Compound'] < -0.05:
         return -1
     else:
         return 0
 
-silmarillion_sentiments_final['Rating_num'] = silmarillion_sentiments_final.apply(ratings, axis=1)
+df['Rating_num'] = df.apply(ratings, axis=1)
 
-silmarillion_sentiments_final.to_csv(r'C:\Users\Nick\Desktop\GitProjects\NLP_projects\The_Silmarillion\silmarillion_sentiments.csv')
+df.to_csv('./robinhood_emotions.csv')
 
-silmarillion_sentiments_final.head(10)
+df.head(10)
