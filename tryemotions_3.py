@@ -1,4 +1,5 @@
-nltk.download('punkt')
+# https://github.com/dinbav/LeXmo/blob/master/LeXmo/LeXmo.py
+
 from nltk import word_tokenize
 from nltk.stem.snowball import SnowballStemmer
 import requests

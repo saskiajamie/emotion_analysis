@@ -1,3 +1,5 @@
+#https://github.com/NBrisbon/Silmarillion-NLP/blob/master/Sentiment_Analysis.py
+
 import pandas as pd
 from nltk import word_tokenize
 from nltk.stem.snowball import SnowballStemmer
@@ -94,7 +96,7 @@ silmarillion_sentiments_final.head()
 # In[264]:
 
 
-silmarillion_sentiments_final.to_csv(r'C:\Users\Nick\Desktop\GitProjects\NLP_projects\The_Silmarillion\silmarillion_sentiments.csv')
+silmarillion_sentiments_final.to_csv('./robinhood_emotions.csv')
 
 
 # In[269]:
